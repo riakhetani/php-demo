@@ -1,8 +1,20 @@
-FROM python:3
-RUN pip install django==3.2
+HTML_FILE="index.html"
+PHP_FILE="script.php"
 
-COPY . .
+# Run PHP file (if required)
+php $PHP_FILE
 
-RUN python manage.py migrate
-EXPOSE 8000
-CMD ["python","manage.py","runserver","0.0.0.0.8000"]
+# Run HTML file
+# Assuming you have PHP installed, you can use its built-in server to serve the HTML file
+# Adjust the port number as needed (e.g., 8000)
+php -S localhost:8000 &
+
+# Wait for the server to start
+sleep 2
+
+# Use wget to retrieve the HTML page
+# Adjust the URL if needed (e.g., if running on a different port)
+wget -qO output.html http://localhost:8000/$HTML_FILE
+
+# Kill the PHP server process
+kill %1
